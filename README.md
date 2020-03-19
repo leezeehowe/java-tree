@@ -543,7 +543,7 @@ public class ApplicationTest {
 
 ```
 
-![](https://lee-img-bed.oss-cn-shenzhen.aliyuncs.com/tree/getSubTree-3.JPG)
+![debug-screenshot](https://lee-img-bed.oss-cn-shenzhen.aliyuncs.com/tree/getSubTree-3.JPG)
 
 ```json
 {
