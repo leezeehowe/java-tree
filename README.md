@@ -683,6 +683,87 @@ public class ApplicationTest {
 
 没问题，嘤嘤嘤。
 
+## Javascript树操作
+这几天写前端业务，遇到需要从`PayloadNode`的`Payload`中提取字段的问题。
+前端用到的`IView`的级联选择器组件，它规定了数据的结构，必须用`label`字段存储名称，`value`字段存储标识。
+即后端返回的数据结构是这样的：
+```javascript
+[
+  {
+    payload: {
+      id: 1,
+      text: '店主'
+    },
+    children: [
+      {
+        id: 3,
+        text: '商品管理员'
+      }
+    ]
+  },
+  {
+    payload: {
+      id: 2,
+      text: '超级管理员'
+    },
+    children: []
+  }
+]
+```
+而前端需要的结构是这样的：
+```javascript
+[
+  {
+    value: 1,
+    label: '店主'
+    payload: {
+      id: 1,
+      text: '店主'
+    },
+    children: [
+      {
+        value: 3,
+        label: '商品管理员'
+        payload: {
+          id: 3,
+        text: '商品管理员'
+        },
+        children: []
+      }
+    ]
+  },
+  {
+    value: 2,
+    label: '超级管理员'
+    payload: {
+      id: 2,
+      text: '超级管理员'
+    },
+    children: []
+  }
+]
+```
+但是呢，IView的树形控件又要求`title`是名称，所以写了一个方法，可以把`payload`中的属性映射到外层json并取一个别名。
+```javascript
+/**
+ * 从payload中提取属性到外层。
+ * @param {*} payloadNodeArr payloadNode列表
+ * @param {*} mapArr  映射关系，一个二维数组，即要提取的属性在外层json的别名。
+ */
+export const peekAttributeFromPayloadToOutside = (payloadNodeArr, mapArr) => {
+  const recursion = (list) => {
+    list.forEach(node => {
+      mapArr.forEach(map => {
+        node[map[0]] = node.payload[map[1]];
+      })
+      if(node.children instanceof Array && node.children.length > 0) {
+        recursion(node.children);
+      }
+    })
+  }
+  recursion(payloadNodeArr);
+}
+```
 
 
 
